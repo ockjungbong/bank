@@ -1,0 +1,30 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/board?serverTimezone=Asia/Seoul
+    username: root
+    password: root
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+    properties:
+      '[hibernate.default_batch_fetch_size]' : 100
+      '[hibernate.format_sql]': true
+    show-sql: true
+  output:
+    ansi:
+      enabled: always
+
+logging:
+  level:
+    '[shop.mtcoding.bank]': DEBUG
+    '[org.hibernate.type]': TRACE
