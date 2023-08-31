@@ -24,6 +24,8 @@ public class SecurityConfigTest {
 
     // when
     ResultActions resultActions = mvc.perform(get("/api/s/hello"));
+    String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+    System.out.println("테스트 : " + responseBody);
 
     // then
 
