@@ -1,7 +1,5 @@
 package shop.mtcoding.bank.config;
 
-import javax.security.auth.message.AuthException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +12,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import shop.mtcoding.bank.domain.user.UserEnum;
+import shop.mtcoding.bank.dto.ResponseDto;
+import shop.mtcoding.bank.util.CustomResponseUtil;
 
 @Configuration
 public class SecurityConfig {
@@ -36,12 +38,11 @@ public class SecurityConfig {
 		http.csrf().disable(); // csrf 허용안함 //
 		// cors : js 허용을 안 하겠다.
 		http.cors().configurationSource(null); // cors 재정의
-		
+
 		// ExcpetionTranslationFilter (인증 확인 필터)
-        http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
-            response.setStatus(403);
-            response.getWriter().println("error");
-        });
+		http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
+			CustomResponseUtil.fail(response, "로그인을 진행해 주세요");
+		});
 
 		/*
 		 * SessionCreationPolicy.STATELESS 클라이언트가 로그인 request 서버는 User 세션 저장 서버가
@@ -61,12 +62,12 @@ public class SecurityConfig {
 
 	public CorsConfigurationSource configurationSource() {
 		log.debug("디버그 : SecurityConfig의 configurationSource");
-		
+
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.addAllowedHeader("*");
-		configuration.addAllowedMethod("*");		
+		configuration.addAllowedMethod("*");
 		configuration.addAllowedOriginPattern("*"); // 프론트 서버의 주소 등록
-		configuration.setAllowCredentials(true); 	// 클라이언트에서 쿠키 요청 허용
+		configuration.setAllowCredentials(true); // 클라이언트에서 쿠키 요청 허용
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
