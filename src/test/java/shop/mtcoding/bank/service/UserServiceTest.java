@@ -1,13 +1,12 @@
 package shop.mtcoding.bank.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,15 +15,16 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import shop.mtcoding.bank.config.dummy.DummyObject;
 import shop.mtcoding.bank.domain.user.User;
 import shop.mtcoding.bank.domain.user.UserEnum;
 import shop.mtcoding.bank.domain.user.UserRepository;
-import shop.mtcoding.bank.service.UserService.JoinReqDto;
-import shop.mtcoding.bank.service.UserService.JoinRespDto;
+import shop.mtcoding.bank.dto.user.UserReqDto.JoinReqDto;
+import shop.mtcoding.bank.dto.user.UserRespDto.JoinRespDto;
 
 // Spring 관련 Bean들이 하나도 없는 환경!!
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+public class UserServiceTest extends DummyObject {
 
 	@InjectMocks
 	private UserService userService;
@@ -52,17 +52,7 @@ public class UserServiceTest {
 		// when(userRepository.findByUsername(any())).thenReturn(Optional.of(new
 		// User()));
 
-		User ssar = User.builder()
-				.id(1L)
-				.username("ssar")
-				.password("1234")
-				.email("ssar@nate.com")
-				.fullname("쌀")
-				.role(UserEnum.CUSTOMER)
-				.createdAt(LocalDateTime.now())
-				.updatedAt(LocalDateTime.now())
-				.build();
-
+		User ssar = newMockUser(1L, "ssar", "쌀");
 		when(userRepository.save(any())).thenReturn(ssar);
 
 		// when

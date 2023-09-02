@@ -8,13 +8,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import shop.mtcoding.bank.domain.user.User;
-import shop.mtcoding.bank.domain.user.UserEnum;
 import shop.mtcoding.bank.domain.user.UserRepository;
+import shop.mtcoding.bank.dto.user.UserReqDto.JoinReqDto;
+import shop.mtcoding.bank.dto.user.UserRespDto.JoinRespDto;
 import shop.mtcoding.bank.handler.ex.CustomApiException;
 
 @RequiredArgsConstructor
@@ -42,36 +40,7 @@ public class UserService {
 		return new JoinRespDto(userPS);
 	}
 
-	@ToString
-	@Getter
-	@Setter
-	public static class JoinRespDto {
-		private Long id;
-		private String username;
-		// pw는 보안사항이므로 응답해 주면 안 됨.
-		private String fullname;
-
-		public JoinRespDto(User user) {
-			this.id = user.getId();
-			this.username = user.getUsername();
-			this.fullname = user.getFullname();
-		}
-	}
-
-	@Getter
-	@Setter
-	public static class JoinReqDto {
-		// 유효성 검사
-		private String username;
-		private String password;
-		private String email;
-		private String fullname;
-
-		// 나열된 필드값으로 엔티티 생성
-		public User toEntity(BCryptPasswordEncoder passwordEncoder) {
-			return User.builder().username(username).password(passwordEncoder.encode(password)).email(email)
-					.fullname(fullname).role(UserEnum.CUSTOMER).build();
-		}
-	}
+	
+	
 
 }
