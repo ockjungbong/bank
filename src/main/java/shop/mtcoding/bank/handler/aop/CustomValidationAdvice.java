@@ -7,13 +7,10 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import shop.mtcoding.bank.dto.ResponseDto;
 import shop.mtcoding.bank.handler.ex.CustomValidationException;
 
 // 컨트롤러도 아니고 설정 파일도 아니기 때문에 
@@ -35,7 +32,7 @@ public class CustomValidationAdvice {
    * - BindingResult라는 매개변수가 있고 에러가 있을 때,
    * - throw new CustomValidationException("유효성 검사 실패", errorMap); 발생
    */
-  @Around("postMapping || putMapping") // joinPoint의 전후 제어
+  @Around("postMapping() || putMapping()") // joinPoint의 전후 제어
   public Object validationAdvice(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
     Object[] args = proceedingJoinPoint.getArgs(); // joinPoint의 매개변수
 
