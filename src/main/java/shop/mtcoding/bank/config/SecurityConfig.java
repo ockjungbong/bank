@@ -84,8 +84,9 @@ public class SecurityConfig {
 			CustomResponseUtil.fail(response, "권한이 없습니다.", HttpStatus.FORBIDDEN);
 		});
 
-		http.authorizeHttpRequests().antMatchers("/api/s/**").authenticated().antMatchers("/api/admin/**")
-				.hasRole("" + UserEnum.ADMIN) // ROLE_ 안붙여도 됨
+		http.authorizeHttpRequests()
+				.antMatchers("/api/s/**").authenticated()
+				.antMatchers("/api/admin/**").hasRole("" + UserEnum.ADMIN) // ROLE_ 안붙여도 됨
 				.anyRequest().permitAll();
 
 		return http.build();
