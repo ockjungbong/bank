@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,6 +25,7 @@ import shop.mtcoding.bank.domain.user.User;
 import shop.mtcoding.bank.domain.user.UserRepository;
 import shop.mtcoding.bank.dto.user.UserReqDto.LoginReqDto;
 
+@Transactional
 @ActiveProfiles("test")
 @AutoConfigureMockMvc // MockMvc 객체를 주입하려면 @AutoConfigureMockMvc 가 필요함.
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
@@ -71,10 +73,21 @@ public class JwtAuthenticationFilterTest extends DummyObject {
   @Test
   public void unsuccessfulAuthentication_test() throws Exception {
     // given
+    LoginReqDto loginReqDto = new LoginReqDto();
+    loginReqDto.setUsername("ssar");
+    loginReqDto.setPassword("12345");
+    String requestBody = om.writeValueAsString(loginReqDto);
+    System.out.println("테스트 : " + requestBody);
 
     // when
+    ResultActions resultActions = mvc
+        .perform(post("/api/login").content(requestBody).contentType(MediaType.APPLICATION_JSON));
+    String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+    String jwtToken = resultActions.andReturn().getResponse().getHeader(JwtVO.HEADER);
+    System.out.println("테스트 : " + responseBody);
+    System.out.println("테스트 : " + jwtToken);
 
     // then
-
+    resultActions.andExpect(status().isUnauthorized());
   }
 }
