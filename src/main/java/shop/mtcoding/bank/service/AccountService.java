@@ -2,19 +2,16 @@ package shop.mtcoding.bank.service;
 
 import java.util.Optional;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import shop.mtcoding.bank.domain.account.Account;
 import shop.mtcoding.bank.domain.account.AccountRepository;
 import shop.mtcoding.bank.domain.user.User;
 import shop.mtcoding.bank.domain.user.UserRepository;
+import shop.mtcoding.bank.dto.account.AccountReqDto.AccountSaveReqDto;
+import shop.mtcoding.bank.dto.account.AccountRespDto.AccountSaveRespDto;
 import shop.mtcoding.bank.handler.ex.CustomApiException;
 
 @Service
@@ -26,7 +23,7 @@ public class AccountService {
   private final AccountRepository accountRepository;
 
   @Transactional
-  public AccountSaveRsspDto 계좌등록(AccountSaveReqDto accountSaveReqDto, Long userId) {
+  public AccountSaveRespDto 계좌등록(AccountSaveReqDto accountSaveReqDto, Long userId) {
     // User가 DB에 있는지 검증
     User userPS = userRepository.findById(userId).orElseThrow(
         () -> new CustomApiException("유저를 찾을 수 없습니다."));
@@ -41,44 +38,8 @@ public class AccountService {
     Account accountPS = accountRepository.save(accountSaveReqDto.toEntity(userPS));
 
     // DTO를 응답
-    return new AccountSaveRsspDto(accountPS);
+    return new AccountSaveRespDto(accountPS);
 
-  }
-
-  @Getter
-  @Setter
-  public static class AccountSaveRsspDto {
-    private Long id;
-    private Long number;
-    private Long balance;
-
-    public AccountSaveRsspDto(Account account) {
-      this.id = account.getId();
-      this.number = account.getNumber();
-      this.balance = account.getBalance();
-    }
-
-  }
-
-  @Getter
-  @Setter
-  public static class AccountSaveReqDto {
-    @NotNull
-    @Digits(integer = 4, fraction = 4)
-    private Long number;
-
-    @NotNull
-    @Digits(integer = 4, fraction = 4)
-    private Long password;
-
-    public Account toEntity(User user) {
-      return Account.builder()
-          .number(number)
-          .password(password)
-          .balance(1000L)
-          .user(user)
-          .build();
-    }
   }
 
 }
