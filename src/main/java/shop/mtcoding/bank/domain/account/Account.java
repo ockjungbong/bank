@@ -19,6 +19,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.mtcoding.bank.domain.user.User;
+import shop.mtcoding.bank.handler.ex.CustomApiException;
 
 @Getter
 @NoArgsConstructor
@@ -62,6 +63,12 @@ public class Account {
     this.user = user;
     this.updatedAt = updatedAt;
     this.createdAt = createdAt;
+  }
+
+  public void checkOwner(Long userId) {
+    if (user.getId() != userId) {
+      throw new CustomApiException("계좌 소유자가 아닙니다.");
+    }
   }
 
 }

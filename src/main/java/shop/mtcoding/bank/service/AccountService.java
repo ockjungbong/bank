@@ -1,24 +1,20 @@
 package shop.mtcoding.bank.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import shop.mtcoding.bank.domain.account.Account;
 import shop.mtcoding.bank.domain.account.AccountRepository;
 import shop.mtcoding.bank.domain.user.User;
 import shop.mtcoding.bank.domain.user.UserRepository;
 import shop.mtcoding.bank.dto.account.AccountReqDto.AccountSaveReqDto;
 import shop.mtcoding.bank.dto.account.AccountRespDto.AccountSaveRespDto;
+import shop.mtcoding.bank.dto.account.AccountRespDto.AccountSaveRespDto.AccountListRespDto;
 import shop.mtcoding.bank.handler.ex.CustomApiException;
-import shop.mtcoding.bank.service.AccountService.AccountListRespDto.AccountDto;
 
 @Service
 @RequiredArgsConstructor
@@ -36,33 +32,6 @@ public class AccountService {
         List<Account> accountListPS = accountRepository.findByUser_id(userId);
         return new AccountListRespDto(userPS, accountListPS);
 
-    }
-
-    @Getter
-    @Setter
-    public static class AccountListRespDto {
-
-        private String fullname;
-        private List<AccountDto> accounts = new ArrayList<>();
-
-        public AccountListRespDto(User user, List<Account> accounts) {
-            this.fullname = user.getFullname();
-            this.accounts = accounts.stream().map(AccountDto::new).collect(Collectors.toList());
-        }
-
-        @Setter
-        @Getter
-        public class AccountDto {
-            private Long id;
-            private Long number;
-            private Long balance;
-
-            public AccountDto(Account account) {
-                this.id = account.getId();
-                this.number = account.getNumber();
-                this.balance = account.getBalance();
-            }
-        }
     }
 
     @Transactional
@@ -83,6 +52,20 @@ public class AccountService {
         // DTO를 응답
         return new AccountSaveRespDto(accountPS);
 
+    }
+
+    @Transactional
+    public void 계좌삭제(Long number, Long userId) {
+        // 1. 계좌 확인
+        Account accountPS = accountRepository.findByNumber(number).orElseThrow(
+                () -> new CustomApiException("계좌를 찾을 수 없습니다."));
+
+        // 2. 계좌 소유자 확인
+        // 익셉션이 터지면 핸들러를 통해서 처리가 되는 구조
+        accountPS.checkOwner(userId);
+
+        // 3. 계좌 삭제
+        accountRepository.deleteById(accountPS.getId());
     }
 
 }
