@@ -1,4 +1,4 @@
-package shop.mtcoding.bank.confg;
+package shop.mtcoding.bank.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
