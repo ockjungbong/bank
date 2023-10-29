@@ -171,7 +171,7 @@ public class AccountService {
         private String gubun;
 
         @NotEmpty
-        @Pattern(regexp = "^[0-9]{3}[0-9]{4}[0-9]{4}]")
+        @Pattern(regexp = "^[0-9]{3}[0-9]{4}[0-9]{4}$")
         private String tel;
 
     }

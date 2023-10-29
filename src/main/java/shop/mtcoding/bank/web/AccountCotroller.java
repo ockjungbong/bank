@@ -21,6 +21,8 @@ import shop.mtcoding.bank.dto.account.AccountReqDto.AccountSaveReqDto;
 import shop.mtcoding.bank.dto.account.AccountRespDto.AccountSaveRespDto;
 import shop.mtcoding.bank.dto.account.AccountRespDto.AccountSaveRespDto.AccountListRespDto;
 import shop.mtcoding.bank.service.AccountService;
+import shop.mtcoding.bank.service.AccountService.AccountDepositReqDto;
+import shop.mtcoding.bank.service.AccountService.AccountDepositRespDto;
 
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -69,5 +71,12 @@ public class AccountCotroller {
     accountService.계좌삭제(number, loginUser.getUser().getId());
     return new ResponseEntity<>(new ResponseDto<>(1, "계좌 삭제 완료", null), HttpStatus.OK);
   }
+
+    // ATM 입금
+    @PostMapping("/account/deposit")
+    public ResponseEntity<?> depositAccount(@RequestBody @Valid AccountDepositReqDto accountDepositReqDto, BindingResult bindingResult) {
+        AccountDepositRespDto accountDepositRespDto = accountService.계좌입금(accountDepositReqDto);
+        return new ResponseEntity<>(new ResponseDto<>(1, "계좌 입금 완료", accountDepositRespDto), HttpStatus.CREATED);
+    }
 
 }
